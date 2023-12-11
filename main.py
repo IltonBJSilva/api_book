@@ -37,3 +37,13 @@ livros = [
         "isbn": "978-85-7522-508-3"
     }
 ]
+
+# consultar(Todos)
+@main.route("/livros")
+def obter_livros():
+    return jsonify(livros)
+# consultar(id)
+# Editar
+# Excluir
+
+main.run(port=5000, host='localhost', debug=True)
