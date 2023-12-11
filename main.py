@@ -39,11 +39,11 @@ livros = [
 ]
 
 # consultar(Todos)
-@main.route("/livros")
+@main.route("/livros", methods=["GET"])
 def obter_livros():
     return jsonify(livros)
 # consultar(id)
-# Editar
-# Excluir
+
+
 
 main.run(port=5000, host='localhost', debug=True)
