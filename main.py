@@ -49,8 +49,15 @@ def obter_livros_por_id(id):
     for livro in livros:
         if livro.get('id') == id:
             return jsonify(livro)
+    #return jsonify({"erro": "livro não encontrado"}), 404
+# Criar
+@main.route("/livros", methods=["POST"])
+def incluir_novo_livro():
+    novo_livro = request.get_json()
+    livros.append(novo_livro)
 
-# Editar
+    return jsonify(novo_livro)
+
 # Excluir
 
 main.run(port=5000, host='localhost', debug=True)
