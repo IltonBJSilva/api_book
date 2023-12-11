@@ -49,7 +49,8 @@ def obter_livros_por_id(id):
     for livro in livros:
         if livro.get('id') == id:
             return jsonify(livro)
-    #return jsonify({"erro": "livro não encontrado"}), 404
+    return jsonify({"erro": "livro não encontrado"}), 404
+
 # Criar
 @main.route("/livros", methods=["POST"])
 def incluir_novo_livro():
@@ -71,5 +72,16 @@ def editar_livro_por_id(id):
 
 
 # Excluir
+@main.route("/livros/<int:id>", methods=["DELETE"])
+def excluir_livro(id):
+    for indice, livro in enumerate(livros):
+        if livro.get('id') == id:
+            #livros.pop(indice)
+            del livros[indice]
+            return jsonify({"mensagem": "livro excluido com sucesso"}), 200
+        return jsonify({"mensagem": "livro não encontrado"}), 404
+    return jsonify(livros)
+
+
 
 main.run(port=5000, host='localhost', debug=True)
