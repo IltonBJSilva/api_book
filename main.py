@@ -58,6 +58,18 @@ def incluir_novo_livro():
 
     return jsonify(novo_livro)
 
+# Editar
+@main.route("/livros/<int:id>", methods=["PUT"])
+def editar_livro_por_id(id):
+    #receber o livro que será alterado do front
+    livro_alterado = request.get_json()
+    #saber indice e livro/id para saber qual alterar
+    for indice, livro in enumerate(livros):
+        if livro.get('id') == id: #Verifica se o id do livro é igual ao id passado na url
+            livros[indice].update(livro_alterado)
+            return jsonify(livros[indice])
+
+
 # Excluir
 
 main.run(port=5000, host='localhost', debug=True)
