@@ -44,6 +44,13 @@ def obter_livros():
     return jsonify(livros)
 # consultar(id)
 
+@main.route("/livros/<int:id>", methods=["GET"])
+def obter_livros_por_id(id):
+    for livro in livros:
+        if livro.get('id') == id:
+            return jsonify(livro)
 
+# Editar
+# Excluir
 
 main.run(port=5000, host='localhost', debug=True)
