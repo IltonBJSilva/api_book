@@ -79,7 +79,7 @@ def incluir_novo_livro():
 
     return make_response( 
         jsonify(
-            mensagem='Carro criado com sucesso',
+            mensagem='Livro criado com sucesso',
             livropost=novo_livro
         )
     )
@@ -98,7 +98,7 @@ def editar_livro_por_id(id):
             
             return make_response(
                 jsonify(
-                    mensagem='Carro criado com sucesso',
+                    mensagem='Livro criado com sucesso',
                     editado=livro_alterado
                 )
             )
