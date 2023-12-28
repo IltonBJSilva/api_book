@@ -93,19 +93,53 @@ def editar_livro_por_id(id):
     for indice, livro in enumerate(livros):
         if livro.get('id') == id: #Verifica se o id do livro é igual ao id passado na url
             livros[indice].update(livro_alterado)
-            return jsonify(livros[indice])
+            return make_response(
+                jsonify(
+                    mensagem='Carro criado com sucesso',
+                    editado=livros[indice]
+                )
+            )
 
 
 # Excluir
 @main.route("/livros/<int:id>", methods=["DELETE"])
 def excluir_livro(id):
     for indice, livro in enumerate(livros):
+        if livro.get('ID') == id:
+            sql = f"DELETE FROM livros WHERE id = {id}"
+            my_cursor.execute(sql)
+            mydb.commit()
+            
+            return make_response(
+                jsonify(
+                    mensagem='livro excluido com sucesso',
+                    deletado=livro
+                )
+            )
+    return make_response(
+        jsonify(
+            mensagem= "livro não encontrado"
+        ), 404
+    )
+
+
+    '''
+    for indice, livro in enumerate(livros):
         if livro.get('id') == id:
             #livros.pop(indice)
             del livros[indice]
-            return jsonify({"mensagem": "livro excluido com sucesso"}), 200
-        return jsonify({"mensagem": "livro não encontrado"}), 404
+            return make_response (
+                jsonify(
+                    mensagem="livro excluido com sucesso"
+                ), 200
+            )
+        return make_response(
+            jsonify(
+                mensagem= "livro não encontrado"
+             ), 404
+        )
     return jsonify(livros)
+    '''
 
 
 main.run(port=5000, host='localhost', debug=True)
