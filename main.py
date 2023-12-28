@@ -11,43 +11,60 @@
 4 - Quais recursos 
 
 '''
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
+from bd import Livros
+import mysql.connector
+
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="root",
+  database='bibliotecalivros'
+)
+
 
 
 #criando aplicação flask
 main = Flask(__name__)
 
-livros = [
-    {
-        "id": 1,
-        "titulo": "Aprendendo Python",
-        "autor": "Renzo Nuccitelli",
-        "isbn": "978-85-7522-721-6"
-    },
-    {
-        "id": 2,
-        "titulo": "Python Fluente",
-        "autor": "Luciano Ramalho",
-        "isbn": "978-85-7522-508-3"
-    },
-    {
-        "id": 3,
-        "titulo": "Pense em Python",
-        "autor": "Allen B. Downey",
-        "isbn": "978-85-7522-508-3"
-    }
-]
+main.config['JSON_SORT_KEYS'] = False
+
+#livros = Livros
+
+my_cursor = mydb.cursor()
+my_cursor.execute("SELECT * FROM livros")
+meus_livros = my_cursor.fetchall() #fetchall() - retorna todos os registros
+livros = list()
+for livro in meus_livros:
+    livros.append(
+        {
+            'ID': livro[0],
+            'titulo': livro[1],
+            'autor': livro[2],
+            'editora': livro[3],
+            'ano': livro[4]
+
+        }
+    )
+
 
 # consultar(Todos)
 @main.route("/livros", methods=["GET"])
 def obter_livros():
-    return jsonify(livros)
+    return make_response(
+            jsonify(
+                mensagem='Lista de livros', 
+                dados=livros
+            )
+        )
+
 # consultar(id)
 
 @main.route("/livros/<int:id>", methods=["GET"])
 def obter_livros_por_id(id):
+    
     for livro in livros:
-        if livro.get('id') == id:
+        if livro.get('ID') == id:
             return jsonify(livro)
     return jsonify({"erro": "livro não encontrado"}), 404
 
@@ -55,9 +72,17 @@ def obter_livros_por_id(id):
 @main.route("/livros", methods=["POST"])
 def incluir_novo_livro():
     novo_livro = request.get_json()
-    livros.append(novo_livro)
+    sql = f"INSERT INTO livros (titulo, autor, editora, ano) VALUES ('{novo_livro['titulo']}','{novo_livro['autor']}','{novo_livro['editora']}','{novo_livro['ano']}')"
+    my_cursor.execute(sql)
+    mydb.commit()
 
-    return jsonify(novo_livro)
+
+    return make_response( 
+        jsonify(
+            mensagem='Carro criado com sucesso',
+            livropost=novo_livro
+        )
+    )
 
 # Editar
 @main.route("/livros/<int:id>", methods=["PUT"])
@@ -81,7 +106,6 @@ def excluir_livro(id):
             return jsonify({"mensagem": "livro excluido com sucesso"}), 200
         return jsonify({"mensagem": "livro não encontrado"}), 404
     return jsonify(livros)
-
 
 
 main.run(port=5000, host='localhost', debug=True)
