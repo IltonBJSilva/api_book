@@ -91,12 +91,16 @@ def editar_livro_por_id(id):
     livro_alterado = request.get_json()
     #saber indice e livro/id para saber qual alterar
     for indice, livro in enumerate(livros):
-        if livro.get('id') == id: #Verifica se o id do livro é igual ao id passado na url
-            livros[indice].update(livro_alterado)
+        if livro.get('ID') == id: #Verifica se o id do livro é igual ao id passado na url
+            #livros[indice].update(livro_alterado)
+            sql = f"UPDATE livros SET titulo = '{livro_alterado['titulo']}', autor = '{livro_alterado['autor']}', editora = '{livro_alterado['editora']}', ano = '{livro_alterado['ano']}' WHERE id = {id}"      
+            my_cursor.execute(sql)
+            mydb.commit()
+            
             return make_response(
                 jsonify(
                     mensagem='Carro criado com sucesso',
-                    editado=livros[indice]
+                    editado=livro_alterado
                 )
             )
 
